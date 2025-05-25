@@ -333,7 +333,7 @@ class UserController extends Controller
 
         return response()->json([
             'data' => $user,
-            'message' => 'Password changed successfully!'
+            'message' => 'Profile loaded successfully!'
         ]);
     }
 

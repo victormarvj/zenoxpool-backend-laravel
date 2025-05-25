@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,14 +11,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BankDeposit extends Mailable
+class AdminDepositConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public Transaction $transaction, public User $user)
     {
         //
     }
@@ -27,7 +29,7 @@ class BankDeposit extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Bank Deposit',
+            subject: 'Deposit Confirmation',
         );
     }
 
@@ -37,7 +39,7 @@ class BankDeposit extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.deposits.bank',
+            markdown: 'mail.deposits.admin',
         );
     }
 

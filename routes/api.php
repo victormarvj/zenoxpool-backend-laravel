@@ -10,6 +10,7 @@ use App\Http\Controllers\Admins\ZoneController;
 use App\Http\Controllers\Users\BankController as UsersBankController;
 use App\Http\Controllers\Users\IndexController as UsersIndexController;
 use App\Http\Controllers\Users\LoopController;
+use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\ZoneController as UsersZoneController;
 use Illuminate\Http\Request;
@@ -27,7 +28,20 @@ Route::prefix('user')->group(function() {
         Route::post('/login', 'login');
 
 
-        Route::post('/logout', 'logout')->middleware('auth:sanctum');
+        Route::middleware('auth:sanctum')->group(function() {
+
+
+            Route::post('/settings', 'settings');
+
+            Route::prefix('profile')->group(function() {
+                Route::get('/', 'profile');
+                Route::post('/', 'updateProfile');
+                Route::post('/image-upload', 'imageUpload');
+            });
+
+            Route::post('/logout', 'logout');
+        });
+
     });
 
 
@@ -51,7 +65,23 @@ Route::prefix('user')->group(function() {
         Route::controller(UsersBankController::class)->group(function() {
             Route::prefix('bank')->group(function() {
                 Route::get('/details', 'view');
+                Route::post('/deposit', 'bankDeposit');
+
+
+                Route::controller(TransactionController::class)->group(function() {
+                    Route::prefix('deposit')->group(function() {
+                        Route::post('/', 'bankDeposit');
+                    });
+                });
             });
+        });
+
+        Route::controller(TransactionController::class)->group(function() {
+            Route::prefix('bank')->group(function() {
+                Route::post('/deposit', 'bankDeposit');
+            });
+
+            Route::get('transactions', 'index');
         });
     });
 

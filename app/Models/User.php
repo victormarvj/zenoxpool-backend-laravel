@@ -58,7 +58,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function circulation(): HasMany {
+    public function circulations(): HasMany {
         return $this->hasMany(Circulation::class);
+    }
+
+    public function transactions(): HasMany {
+        return $this->hasMany(Transaction::class);
     }
 }

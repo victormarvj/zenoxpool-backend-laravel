@@ -135,6 +135,110 @@ class UserController extends Controller
         ]);
     }
 
+    public function settings(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|string',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+
+        $validated = $validator->validated();
+
+        $user = $request->user();
+
+        if(!$user || !Hash::check($validated['old_password'], $user->password)) {
+            return response()->json([
+                "error" => "Error",
+                'message' => 'Invalid old password'
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($validated['password'])
+        ]);
+
+        return response()->json([
+            'data' => $user,
+            'message' => 'Password changed successfully!'
+        ]);
+    }
+
+    public function profile(Request $request) {
+        $user = $request->user();
+
+        return response()->json([
+            'data' => $user,
+            'message' => 'Profile loaded successfully!'
+        ]);
+    }
+
+    public function updateProfile(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string',
+            'phone' => 'required|string',
+            'image' => 'string|nullable',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+
+        $validated = $validator->validated();
+
+
+        $user = $request->user()->update([
+            'fullname' => $validated['fullname'],
+            'phone' => $validated['phone'],
+            'image' => $validated['image'],
+        ]);
+
+
+        return response()->json([
+            'data' => $user,
+            'message' => 'Profile updated successfully!'
+        ]);
+    }
+
+
+    public function imageUpload(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|file|image|max:2048', // Accept only images
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        // Handle file upload
+        if (!$request->hasFile('image')) {
+            return response()->json([
+                "error" => 'Image file not found.',
+                'message' => 'No image found'
+            ], 422);
+        }
+
+        $imagePath = $request->file('image')->store('profile_pic', 'public');
+
+        return response()->json([
+            'data' => $imagePath,
+            'message' => 'Image loaded successfully!'
+        ]);
+    }
+
     public function logout(Request $request) {
         $request->user()->currentAccessToken()->delete();
         return response()->json([

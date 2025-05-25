@@ -12,7 +12,7 @@ class LoopController extends Controller
         $user = $request->user();
 
         $zone = Zone::find($id);
-        $circulation = $user->circulation;
+        $circulation = $user->circulations;
 
         $user->balance = number_format($user->usdt, 2);
 
