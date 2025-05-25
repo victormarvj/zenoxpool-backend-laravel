@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Controllers\Users;
+
+use App\Http\Controllers\Controller;
+use App\Models\Zone;
+use Illuminate\Http\Request;
+
+class LoopController extends Controller
+{
+    public function index(Request $request, $id) {
+        $user = $request->user();
+
+        $zone = Zone::find($id);
+        $circulation = $user->circulation;
+
+        $user->balance = number_format($user->usdt, 2);
+
+        return response()->json([
+            'data' => [
+                'user' => $user,
+                'zone' => $zone,
+                'circulations' => $circulation,
+            ],
+            'message' => 'Successful'
+        ]);
+    }
+}
