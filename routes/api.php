@@ -5,6 +5,7 @@ use App\Http\Controllers\Admins\CryptoController;
 use App\Http\Controllers\Admins\GasFeeController;
 use App\Http\Controllers\Admins\IndexController;
 use App\Http\Controllers\Admins\LiquidityPoolController;
+use App\Http\Controllers\Admins\TransactionController as AdminsTransactionController;
 use App\Http\Controllers\Admins\UserController as AdminsUserController;
 use App\Http\Controllers\Admins\ZoneController;
 use App\Http\Controllers\Users\BankController as UsersBankController;
@@ -154,6 +155,10 @@ Route::prefix('admin')->group(function() {
 
         Route::controller(IndexController::class)->group(function() {
             Route::get('overview', 'index');
+        });
+
+        Route::controller(AdminsTransactionController::class)->group(function() {
+            Route::get('transactions', 'index');
         });
     });
 });
