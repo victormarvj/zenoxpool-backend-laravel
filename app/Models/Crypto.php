@@ -15,4 +15,12 @@ class Crypto extends Model
         'image',
         'status',
     ];
+
+    public function getNameAttribute($value) {
+        return ucfirst($value);
+    }
+
+    public function getAbbreviationAttribute($value) {
+        return strtoupper($value);
+    }
 }

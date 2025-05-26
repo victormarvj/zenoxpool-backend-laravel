@@ -106,12 +106,6 @@ class UserController extends Controller
 
             return $this->index();
 
-        }catch(QueryException $e) {
-            // Handles DB errors like duplicate keys, foreign key failures, etc.
-            return response()->json([
-                "error" => $e->getMessage(),
-                "message" => "Database error occurred. Possibly email / username already exist or invalid data."
-            ], 422);
         }catch(\Exception $e) {
             return response()->json([
                 "error" => 'Error',

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->float('bnb')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedTinyInteger('status')->default(1)->comment('0=inactive, 1=active');
+            $table->unsignedTinyInteger('status')->index()->default(1)->comment('0=inactive, 1=active');
             $table->unsignedTinyInteger('privilege')->default(6)->comment('0-5=admins, 6=users');
             $table->rememberToken();
             $table->timestamps();

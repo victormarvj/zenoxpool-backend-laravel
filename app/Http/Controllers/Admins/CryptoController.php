@@ -26,8 +26,28 @@ class CryptoController extends Controller
         ]);
     }
 
-    public function view($id) {
-        $crypto = Crypto::find($id);
+    public function view(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'crypto_id' => 'required|numeric',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $crypto = Crypto::find($validated['crypto_id']);
+
+        if(!$crypto) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Crypto not found'
+            ], 422);
+        }
 
         return response()->json([
             'data' => $crypto,

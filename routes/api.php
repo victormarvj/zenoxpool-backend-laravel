@@ -63,26 +63,36 @@ Route::prefix('user')->group(function() {
             });
         });
 
-        Route::controller(UsersBankController::class)->group(function() {
-            Route::prefix('bank')->group(function() {
+        Route::prefix('bank')->group(function() {
+            Route::controller(UsersBankController::class)->group(function() {
                 Route::get('/details', 'view');
-                Route::post('/deposit', 'bankDeposit');
 
+            });
 
-                Route::controller(TransactionController::class)->group(function() {
-                    Route::prefix('deposit')->group(function() {
-                        Route::post('/', 'bankDeposit');
-                    });
+            Route::controller(TransactionController::class)->group(function() {
+                Route::prefix('deposit')->group(function() {
+                    Route::post('/', 'bankDeposit');
                 });
             });
         });
 
         Route::controller(TransactionController::class)->group(function() {
-            Route::prefix('bank')->group(function() {
-                Route::post('/deposit', 'bankDeposit');
-            });
-
             Route::get('transactions', 'index');
+        });
+
+
+        Route::controller(CryptoController::class)->group(function() {
+            Route::prefix('crypto')->group(function() {
+                Route::get('/', 'index');
+                Route::post('/details', 'view');
+
+
+                Route::controller(TransactionController::class)->group(function() {
+                    Route::prefix('deposit')->group(function() {
+                        Route::post('/', 'cryptoDeposit');
+                    });
+                });
+            });
         });
     });
 
@@ -132,7 +142,7 @@ Route::prefix('admin')->group(function() {
         Route::controller(BankController::class)->group(function() {
             Route::prefix('banks')->group(function() {
                 Route::get('/', 'index');
-                Route::get('/edit-bank/{id}', 'view');
+                Route::get('/edit-bank/{bank_id}', 'view');
                 Route::post('/edit-bank/', 'update');
             });
         });
@@ -148,7 +158,7 @@ Route::prefix('admin')->group(function() {
         Route::controller(GasFeeController::class)->group(function() {
             Route::prefix('gas-fee')->group(function() {
                 // Route::get('/', 'index');
-                Route::get('/edit-gas-fee/{id}', 'view');
+                Route::get('/edit-gas-fee/{gasfee_id}', 'view');
                 Route::post('/edit-gas-fee/', 'update');
             });
         });
@@ -158,7 +168,21 @@ Route::prefix('admin')->group(function() {
         });
 
         Route::controller(AdminsTransactionController::class)->group(function() {
-            Route::get('transactions', 'index');
+
+            Route::prefix('transactions')->group(function() {
+                Route::get('/', 'index');
+
+                Route::prefix('bank-deposit')->group(function() {
+                    Route::post('accept', 'acceptBankDeposit');
+                    Route::post('reject', 'rejectDeposit');
+                });
+
+                Route::prefix('crypto-deposit')->group(function() {
+                    Route::post('accept', 'acceptCryptoDeposit');
+                    Route::post('reject', 'rejectDeposit');
+                });
+            });
         });
-    });
+
+    });;
 });

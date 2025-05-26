@@ -15,8 +15,13 @@ class Transaction extends Model
         'type',
         'name',
         'type_amount',
+        'type_name',
         'amount',
         'address',
         'status',
     ];
+
+    public function getNameAttribute($value) {
+        return ucwords($value);
+    }
 }

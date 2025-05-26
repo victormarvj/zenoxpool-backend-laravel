@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TransactionDetails;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
     public function index() {
 
         $transactions = Transaction::join('users', 'transactions.user_id', '=', 'users.id')
-            ->select('transactions.*', 'users.username', 'users.email')->get()->map(function($trans) {
+            ->select('transactions.*', 'users.username', 'users.email')->orderBy('id', 'desc')->get()->map(function($trans) {
             $trans->type_amount = number_format($trans->type_amount, 2);
             $trans->amount = number_format($trans->amount, 2);
             $trans->name = ucwords($trans->name);
@@ -27,4 +32,146 @@ class TransactionController extends Controller
             'message' => 'transactions retrieved successfully!'
         ]);
     }
+
+    public function acceptBankDeposit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|numeric|exists:transactions,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $transaction = Transaction::find($validated['transaction_id']);
+
+        if (!$transaction) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Invalid transaction data'
+            ], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($transaction) {
+                $user = User::lockForUpdate()->find($transaction->user_id);
+
+                if (!$user) {
+                    throw new \Exception('User not found');
+                }
+
+                $user->increment('usdt', $transaction->amount);
+
+                $transaction->update([
+                    "status" => 1
+                ]);
+
+
+                Mail::to($user)->send(new TransactionDetails($transaction, $user));
+
+            });
+
+            return $this->index();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => 'Error',
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    public function acceptCryptoDeposit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|numeric|exists:transactions,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $transaction = Transaction::find($validated['transaction_id']);
+
+        if (!$transaction) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Invalid transaction data'
+            ], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($transaction) {
+                $user = User::lockForUpdate()->find($transaction->user_id);
+
+                if (!$user) {
+                    throw new \Exception('User not found');
+                }
+
+                $user->increment("$transaction->type_name", $transaction->amount);
+
+                $transaction->update([
+                    "status" => 1
+                ]);
+
+
+                Mail::to($user)->send(new TransactionDetails($transaction, $user));
+
+            });
+
+            return $this->index();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => 'Error',
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function rejectDeposit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|numeric|exists:transactions,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $transaction = Transaction::find($validated['transaction_id']);
+
+        if (!$transaction) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Invalid transaction data'
+            ], 422);
+        }
+
+        $transaction->update(["status" => 2]);
+
+        $user = User::find($transaction->user_id);
+
+
+        Mail::to($user)->send(new TransactionDetails($transaction, $user));
+
+        return $this->index();
+    }
+
 }
