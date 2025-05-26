@@ -11,6 +11,7 @@ class Crypto extends Model
         'abbreviation',
         'network',
         'address',
+        'qr_code',
         'value',
         'image',
         'status',
@@ -18,9 +19,5 @@ class Crypto extends Model
 
     public function getNameAttribute($value) {
         return ucfirst($value);
-    }
-
-    public function getAbbreviationAttribute($value) {
-        return strtoupper($value);
     }
 }

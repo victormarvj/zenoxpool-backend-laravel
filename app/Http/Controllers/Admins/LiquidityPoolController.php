@@ -16,7 +16,7 @@ class LiquidityPoolController extends Controller
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Liquidity Pool not found!'
-            ]);
+            ], 422);
         }
 
         return response()->json([

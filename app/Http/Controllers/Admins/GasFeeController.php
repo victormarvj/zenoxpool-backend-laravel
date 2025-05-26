@@ -18,27 +18,15 @@ class GasFeeController extends Controller
     //     ]);
     // }
 
-    public function view(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'gasfee_id' => 'required|numeric',
-        ]);
+    public function view($id) {
 
-        if($validator->fails()) {
-            return response()->json([
-                "error" => $validator->errors(),
-                'message' => 'Please fill all fields properly!'
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        $gasFee = GasFee::find($validated['gasfee_id']);
+        $gasFee = GasFee::find($id);
 
         if(!$gasFee) {
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Gas Fee not found!'
-            ]);
+            ], 422);
         }
 
         return response()->json([

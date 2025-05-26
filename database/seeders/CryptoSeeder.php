@@ -18,6 +18,7 @@ class CryptoSeeder extends Seeder
             'abbreviation' => 'btc',
             'network' => 'btc',
             'address' => '0x123abcdefghijkl',
+            'qr_code' => 'crypto_images/qr_code.png',
             'value' => '103731.300',
             'image' => 'crypto_images/btc.png',
         ]);
@@ -27,6 +28,7 @@ class CryptoSeeder extends Seeder
             'abbreviation' => 'usdt',
             'network' => 'bep20',
             'address' => '0x123abcdefghijkl',
+            'qr_code' => 'crypto_images/qr_code.png',
             'value' => '1.000',
             'image' => 'crypto_images/usdt.png',
         ]);
@@ -36,6 +38,7 @@ class CryptoSeeder extends Seeder
             'abbreviation' => 'eth',
             'network' => 'erc20',
             'address' => '0x123abcdefghijkl',
+            'qr_code' => 'crypto_images/qr_code.png',
             'value' => '2545.710',
             'image' => 'crypto_images/eth.png',
         ]);
@@ -45,6 +48,7 @@ class CryptoSeeder extends Seeder
             'abbreviation' => 'bnb',
             'network' => 'bep20',
             'address' => '0x123abcdefghijkl',
+            'qr_code' => 'crypto_images/qr_code.png',
             'value' => '653.060',
             'image' => 'crypto_images/bnb.png',
         ]);

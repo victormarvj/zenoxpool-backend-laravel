@@ -9,6 +9,7 @@ use App\Http\Controllers\Admins\TransactionController as AdminsTransactionContro
 use App\Http\Controllers\Admins\UserController as AdminsUserController;
 use App\Http\Controllers\Admins\ZoneController;
 use App\Http\Controllers\Users\BankController as UsersBankController;
+use App\Http\Controllers\Users\CryptoController as UsersCryptoController;
 use App\Http\Controllers\Users\IndexController as UsersIndexController;
 use App\Http\Controllers\Users\LoopController;
 use App\Http\Controllers\Users\TransactionController;
@@ -81,10 +82,10 @@ Route::prefix('user')->group(function() {
         });
 
 
-        Route::controller(CryptoController::class)->group(function() {
+        Route::controller(UsersCryptoController::class)->group(function() {
             Route::prefix('crypto')->group(function() {
                 Route::get('/', 'index');
-                Route::post('/details', 'view');
+                Route::get('/{id}', 'view');
 
 
                 Route::controller(TransactionController::class)->group(function() {

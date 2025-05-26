@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('transaction_id');
-            $table->unsignedTinyInteger('type')->default(0)->comment('0=bank_deposit, 1=crypto_deposit, 2=transfer, 3=swap,, 4=swap-swaped, 5=gas fee');
+            $table->unsignedTinyInteger('type')->default(0)->comment('0=bank_deposit, 1=crypto_deposit, 2=transfer, 3=swap, 4=swap-swaped, 5=gas fee');
             $table->string('name')->comment('bitcoin / bank name  ');
             $table->float('type_amount')->comment('in crypto');
             $table->string('type_name')->comment('btc / usdt / eth / bnb');

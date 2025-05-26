@@ -10,14 +10,13 @@ use Illuminate\Support\Facades\Validator;
 class CryptoController extends Controller
 {
     public function index() {
-        $crypto = Crypto::orderBy('id', 'desc')->get();
-;
-
-        $crypto->map(function($crypto) {
+        $crypto = Crypto::orderBy('id', 'desc')->get()->map(function($crypto) {
             $crypto->name = ucfirst($crypto->name);
             $crypto->abbreviation = strtoupper($crypto->abbreviation);
             $crypto->network = strtoupper($crypto->network);
             $crypto->value = number_format($crypto->value, 3);
+
+            return $crypto;
         });
 
         return response()->json([
@@ -26,21 +25,9 @@ class CryptoController extends Controller
         ]);
     }
 
-    public function view(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'crypto_id' => 'required|numeric',
-        ]);
+    public function view($id) {
 
-        if($validator->fails()) {
-            return response()->json([
-                "error" => $validator->errors(),
-                'message' => 'Please fill all fields properly!'
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        $crypto = Crypto::find($validated['crypto_id']);
+        $crypto = Crypto::find($id);
 
         if(!$crypto) {
             return response()->json([
@@ -62,6 +49,7 @@ class CryptoController extends Controller
             'abbreviation' => 'required|string',
             'network' => 'required|string',
             'address' => 'required|string',
+            'qr_code' => 'required|string',
             'value' => 'required|numeric',
             'image' => 'required|string',
         ]);
@@ -90,6 +78,7 @@ class CryptoController extends Controller
             // 'abbreviation' => $validated['abbreviation'],
             'network' => $validated['network'],
             'address' => $validated['address'],
+            'qr_code' => $validated['qr_code'],
             'value' => $validated['value'],
             'image' => $validated['image'],
         ]);

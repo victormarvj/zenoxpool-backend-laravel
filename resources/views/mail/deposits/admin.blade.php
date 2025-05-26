@@ -11,12 +11,11 @@ A new bank deposit has been submitted by a user. Please review the details below
 
 **Phone Number:** {{ $user->phone }}
 
-**Amount Deposited - Crypto:** ₦{{ number_format($transaction->type_amount, 2) }}
+**Amount - Crypto:** {{ number_format($transaction->type_amount, 2) }} {{ strtoupper($transaction->type_name) }}
 
-**Amount Deposited - USD:** ₦{{ number_format($transaction->amount, 2) }}
+**Value - USD:** {{ number_format($transaction->amount, 2) }} USD
 
-
-**Bank Name:** {{ $transaction->name }}
+**Bank Name:** {{ explode('/', $transaction->name)[0] }}
 
 **Account Number:** {{ $transaction->address }}
 

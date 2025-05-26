@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('abbreviation');
             $table->string('network');
             $table->string('address');
+            $table->string('qr_code');
             $table->float('value');
             $table->string('image');
             $table->unsignedTinyInteger('status')->default(1)->comment('0=inactive, 1=active');

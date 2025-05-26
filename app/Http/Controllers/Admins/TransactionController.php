@@ -65,7 +65,7 @@ class TransactionController extends Controller
                     throw new \Exception('User not found');
                 }
 
-                $user->increment('usdt', $transaction->amount);
+                $user->increment('usdt', $transaction->type_amount);
 
                 $transaction->update([
                     "status" => 1
@@ -119,7 +119,7 @@ class TransactionController extends Controller
                     throw new \Exception('User not found');
                 }
 
-                $user->increment("$transaction->type_name", $transaction->amount);
+                $user->increment("$transaction->type_name", $transaction->type_amount);
 
                 $transaction->update([
                     "status" => 1

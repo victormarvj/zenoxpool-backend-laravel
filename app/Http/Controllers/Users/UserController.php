@@ -45,7 +45,7 @@ class UserController extends Controller
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Email or username already exists.'
-            ], 409);
+            ], 422);
         }
 
 

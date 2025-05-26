@@ -25,7 +25,7 @@ class ZoneController extends Controller
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Bank not found!'
-            ]);
+            ], 422);
         }
 
         return response()->json([
@@ -62,7 +62,7 @@ class ZoneController extends Controller
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Zone already exists.'
-            ], 409);
+            ], 422);
         }
 
         $zone = Zone::create([

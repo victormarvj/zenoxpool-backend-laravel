@@ -19,27 +19,14 @@ class BankController extends Controller
         ]);
     }
 
-    public function view(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'bank_id' => 'required|numeric',
-        ]);
-
-        if($validator->fails()) {
-            return response()->json([
-                "error" => $validator->errors(),
-                'message' => 'Please fill all fields properly!'
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        $bank = Bank::find($validated['bank_id']);
+    public function view($id) {
+        $bank = Bank::find($id);
 
         if(!$bank) {
             return response()->json([
                 'error' => 'Error',
                 'message' => 'Bank not found!'
-            ]);
+            ], 422);
         }
 
         return response()->json([
