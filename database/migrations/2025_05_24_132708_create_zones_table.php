@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description');
-            $table->unsignedInteger('duration_1');
-            $table->float('roi_1');
-            $table->unsignedInteger('duration_2');
-            $table->float('roi_2');
-            $table->unsignedInteger('duration_3');
-            $table->float('roi_3');
+            $table->unsignedInteger('duration_1')->comment('in days');
+            $table->float('roi_1')->comment('in %');
+            $table->unsignedInteger('duration_2')->comment('in days');
+            $table->float('roi_2')->comment('in %');
+            $table->unsignedInteger('duration_3')->comment('in days');
+            $table->float('roi_3')->comment('in %');
             $table->unsignedTinyInteger('status')->default(1)->comment('0=inactive, 1=active');
             $table->timestamps();
             $table->softDeletes();

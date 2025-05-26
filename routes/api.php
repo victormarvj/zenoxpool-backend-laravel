@@ -61,6 +61,8 @@ Route::prefix('user')->group(function() {
         Route::controller(LoopController::class)->group(function() {
             Route::prefix('loop')->group(function() {
                 Route::get('/{id}', 'index');
+                Route::post('/circulate', 'circulate');
+                Route::put('/{zone_id}/{loop_id}/completed', 'completed');
             });
         });
 

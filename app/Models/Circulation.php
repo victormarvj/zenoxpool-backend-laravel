@@ -9,6 +9,7 @@ class Circulation extends Model
 {
     protected $fillable = [
         'user_id',
+        'zone_id',
         'duration',
         'amount',
         'total',

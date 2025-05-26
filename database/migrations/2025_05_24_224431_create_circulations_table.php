@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('circulations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('duration');
+            $table->unsignedBigInteger('zone_id');
+            $table->unsignedBigInteger('duration')->comment('in days');
             $table->float('amount');
             $table->float('total');
             $table->unsignedTinyInteger('status')->default(0)->comment('0=running, 1=completed');
