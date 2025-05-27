@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Models\Crypto;
+use App\Models\GasFee;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -14,6 +15,7 @@ class IndexController extends Controller
 
         $cryptos = Crypto::where('status', 1)->get();
 
+        $gasFee = GasFee::first()->amount;
 
 
         // Get crypto values safely
@@ -48,6 +50,7 @@ class IndexController extends Controller
                 'userBNBValue' => number_format($userBNBValue, 2),
                 'user' => $user,
                 'crypto' => $cryptos,
+                'gasFee' => $gasFee,
                 'totalSum' => number_format($totalSumUSD, 2),
             ],
             'message' => 'Successful'

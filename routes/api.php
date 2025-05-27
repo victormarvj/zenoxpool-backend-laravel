@@ -94,6 +94,9 @@ Route::prefix('user')->group(function() {
                     Route::prefix('deposit')->group(function() {
                         Route::post('/', 'cryptoDeposit');
                     });
+                    Route::prefix('transfer')->group(function() {
+                        Route::post('/', 'cryptoTransfer');
+                    });
                 });
             });
         });
@@ -183,6 +186,11 @@ Route::prefix('admin')->group(function() {
                 Route::prefix('crypto-deposit')->group(function() {
                     Route::post('accept', 'acceptCryptoDeposit');
                     Route::post('reject', 'rejectDeposit');
+                });
+
+                Route::prefix('crypto-transfer')->group(function() {
+                    Route::post('accept', 'acceptCryptoTransfer');
+                    Route::post('reject', 'rejectCryptoTransfer');
                 });
             });
         });

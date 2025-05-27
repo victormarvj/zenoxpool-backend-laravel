@@ -174,4 +174,83 @@ class TransactionController extends Controller
         return $this->index();
     }
 
+    public function acceptCryptoTransfer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|numeric|exists:transactions,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $transaction = Transaction::find($validated['transaction_id']);
+
+        if (!$transaction) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Invalid transaction data'
+            ], 422);
+        }
+
+        $transaction->update(["status" => 1]);
+
+        $user = User::find($transaction->user_id);
+
+        Mail::to($user)->send(new TransactionDetails($transaction, $user));
+
+        return $this->index();
+    }
+
+    public function rejectCryptoTransfer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|numeric|exists:transactions,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $transaction = Transaction::find($validated['transaction_id']);
+
+        if (!$transaction) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Invalid transaction data'
+            ], 422);
+        }
+
+        DB::transaction(function () use ($transaction) {
+            $transaction->update(["status" => 2]);
+
+            // Increment user balance
+            User::find($transaction->user_id)->increment($transaction->type_name, $transaction->type_amount);
+
+            // Refresh user and transaction from DB
+            $user = User::find($transaction->user_id);
+            $freshTransaction = Transaction::find($transaction->id);
+
+            if (!$user) {
+                throw new \Exception('User not found');
+            }
+
+            // Send mail
+            Mail::to($user->email)->send(new TransactionDetails($freshTransaction, $user));
+        });
+
+        return $this->index();
+    }
+
+
 }
