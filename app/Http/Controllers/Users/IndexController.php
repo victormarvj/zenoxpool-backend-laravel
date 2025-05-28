@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Models\Crypto;
 use App\Models\GasFee;
+use App\Models\TempTransaction;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -16,6 +17,8 @@ class IndexController extends Controller
         $cryptos = Crypto::where('status', 1)->get();
 
         $gasFee = GasFee::first()->amount;
+
+        $tempTransaction = TempTransaction::where('user_id', $user->id)->first();
 
 
         // Get crypto values safely
@@ -51,6 +54,7 @@ class IndexController extends Controller
                 'user' => $user,
                 'crypto' => $cryptos,
                 'gasFee' => $gasFee,
+                'tempTransaction' => $tempTransaction,
                 'totalSum' => number_format($totalSumUSD, 2),
             ],
             'message' => 'Successful'

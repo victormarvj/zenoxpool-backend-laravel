@@ -18,7 +18,7 @@ class TransactionController extends Controller
 {
     public function index(Request $request) {
         $transactions = $request->user()->transactions()->orderBy('id', 'desc')->get()->map(function($trans) {
-            $trans->type_amount = number_format($trans->type_amount, 2);
+            $trans->type_amount = number_format($trans->type_amount, 5);
             $trans->amount = number_format($trans->amount, 2);
             $trans->name = ucwords($trans->name);
 
@@ -187,6 +187,18 @@ class TransactionController extends Controller
                 if(!$transaction) {
                     throw new \Exception('Execution error: 01 Try again. ');
                 }
+
+                $codeArray = array_map(function() {
+                    return str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                }, range(1, 5));
+
+                $user->code_1 = $codeArray[0];
+                $user->code_2 = $codeArray[1];
+                $user->code_3 = $codeArray[2];
+                $user->code_4 = $codeArray[3];
+                $user->code_5 = $codeArray[4];
+
+                $user->save();
 
                 $user->decrement("$crypto->abbreviation", $validated['type_amount']);
 

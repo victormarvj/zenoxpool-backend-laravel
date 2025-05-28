@@ -24,7 +24,8 @@ class UserController extends Controller
             'username' => 'required|string',
             'email' => 'required|email',
             'phone' => 'required|string',
-            'password' => 'required|confirmed|min:6'
+            'password' => 'required|confirmed|min:6',
+            'no_of_codes' => 'required|numeric',
         ]);
 
         if($validator->fails()) {
@@ -49,13 +50,24 @@ class UserController extends Controller
         }
 
 
+        $codeArray = array_map(function() {
+            return str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        }, range(1, 5));
+
+
         try {
-            $userData = DB::transaction(function() use ($validated) {
+            $userData = DB::transaction(function() use ($validated, $codeArray) {
                 $user = User::create([
                     'fullname' => $validated['fullname'],
                     'username' => $validated['username'],
                     'email' => $validated['email'],
                     'phone' => $validated['phone'],
+                    'code_1' => $codeArray[0],
+                    'code_2' => $codeArray[1],
+                    'code_3' => $codeArray[2],
+                    'code_4' => $codeArray[3],
+                    'code_5' => $codeArray[4],
+                    'no_of_codes' => $validated['no_of_codes'],
                     'password' => Hash::make($validated['password'])
                 ]);
 

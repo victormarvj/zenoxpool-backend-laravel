@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
             BankSeeder::class,
             GasFeeSeeder::class,
             ZoneSeeder::class,
-            LiquidityPoolSeeder::class
+            LiquidityPoolSeeder::class,
+            CodeSeeder::class
         ]);
     }
 }

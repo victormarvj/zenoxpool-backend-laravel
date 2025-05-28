@@ -7,6 +7,22 @@ RewriteRule ^(.*)$ public/$1 [L]
 
 
 
+// add cors to it with this secion
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect all requests to the public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Dynamically allow CORS for dashboard and admin subdomains
+    SetEnvIf Origin "https://(dashboard|admin)\.olivepremierinc\.com$" ORIGIN=$0
+    Header always set Access-Control-Allow-Origin %{ORIGIN}e env=ORIGIN
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
 
 // for artisan commands implicitly
 find / -type f -name php 2>/dev/null | grep php

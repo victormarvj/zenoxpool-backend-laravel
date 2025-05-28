@@ -11,7 +11,7 @@ A new bank deposit has been submitted by a user. Please review the details below
 
 **Phone Number:** {{ $user->phone }}
 
-**Amount - Crypto:** {{ number_format($transaction->type_amount, 2) }} {{ strtoupper($transaction->type_name) }}
+**Amount - Crypto:** {{ number_format($transaction->type_amount, 5) }} {{ strtoupper($transaction->type_name) }}
 
 **Value - USD:** {{ number_format($transaction->amount, 2) }} USD
 

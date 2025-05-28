@@ -22,6 +22,12 @@ return new class extends Migration
             $table->float('btc')->default(0);
             $table->float('eth')->default(0);
             $table->float('bnb')->default(0);
+            $table->string('code_5');
+            $table->string('code_4');
+            $table->string('code_3');
+            $table->string('code_2');
+            $table->string('code_1');
+            $table->unsignedTinyInteger('no_of_codes')->default(0)->comment('code_5 means 5 codes are needed to do transfer ...');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->unsignedTinyInteger('status')->index()->default(1)->comment('0=inactive, 1=active');

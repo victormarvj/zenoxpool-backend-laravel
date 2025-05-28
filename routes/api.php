@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admins\BankController;
+use App\Http\Controllers\Admins\CodeController;
 use App\Http\Controllers\Admins\CryptoController;
 use App\Http\Controllers\Admins\GasFeeController;
 use App\Http\Controllers\Admins\IndexController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Users\BankController as UsersBankController;
 use App\Http\Controllers\Users\CryptoController as UsersCryptoController;
 use App\Http\Controllers\Users\IndexController as UsersIndexController;
 use App\Http\Controllers\Users\LoopController;
+use App\Http\Controllers\Users\TempTransactionController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\ZoneController as UsersZoneController;
@@ -98,6 +100,17 @@ Route::prefix('user')->group(function() {
                         Route::post('/', 'cryptoTransfer');
                     });
                 });
+
+                Route::controller(TempTransactionController::class)->group(function() {
+                    Route::prefix('temp-transfer')->group(function() {
+                        Route::get('/', 'index');
+                        Route::get('/{id}', 'view');
+                        Route::post('/verify-code', 'verifyCode');
+                        Route::post('/process', 'processTempTransfer');
+                        Route::delete('/{id}/delete', 'deleteTempTransfer');
+                        Route::post('/', 'cryptoTransfer');
+                    });
+                });
             });
         });
     });
@@ -150,6 +163,14 @@ Route::prefix('admin')->group(function() {
                 Route::get('/', 'index');
                 Route::get('/edit-bank/{bank_id}', 'view');
                 Route::post('/edit-bank/', 'update');
+            });
+        });
+
+        Route::controller(CodeController::class)->group(function() {
+            Route::prefix('codes')->group(function() {
+                Route::get('/', 'index');
+                Route::get('/edit-code/{code_id}', 'view');
+                Route::post('/edit-code/', 'update');
             });
         });
 

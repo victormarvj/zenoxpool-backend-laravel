@@ -17,7 +17,7 @@ class TransactionController extends Controller
 
         $transactions = Transaction::join('users', 'transactions.user_id', '=', 'users.id')
             ->select('transactions.*', 'users.username', 'users.email')->orderBy('id', 'desc')->get()->map(function($trans) {
-            $trans->type_amount = number_format($trans->type_amount, 2);
+            $trans->type_amount = number_format($trans->type_amount, 5);
             $trans->amount = number_format($trans->amount, 2);
             $trans->name = ucwords($trans->name);
             $trans->username = strtolower($trans->username);

@@ -7,7 +7,7 @@ Your {{ $transaction->type == 0 ? 'Bank Deposit' : $transaction->name }} transac
 
 **Transaction Details:**
 - Transaction ID: `{{ $transaction->transaction_id }}`
-- Amount: {{ number_format($transaction->type_amount, 2) }} {{ strtoupper($transaction->type_name) }}
+- Amount: {{ number_format($transaction->type_amount, 5) }} {{ strtoupper($transaction->type_name) }}
 - Value: {{ number_format($transaction->amount, 2) }} USD
 - Status: <span style="color: {{ $transaction->status == 1 ? '#22c55e' : ($transaction->status == 0 ? '#f59e0b' : '#ef4444 ') }}">{{ $transaction->status == 1 ? 'Completed' : ($transaction->status == 0 ? 'Pending' : 'Rejected') }}</span>
 - Date: {{ $transaction->created_at->format('M j, Y g:i A') }}

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('temp_transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('transaction_id');
+            $table->unsignedBigInteger('crypto_id');
             $table->unsignedTinyInteger('type')->default(0)->comment('0=bank_deposit, 1=crypto_deposit, 2=transfer, 3=swap, 4=swap-swaped, 5=circle, 6=gas fee');
             $table->string('name')->comment('bitcoin / bank name  ');
             $table->float('type_amount')->comment('in crypto');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->float('amount')->comment('in USD');
             $table->string('address')->comment('account number / crypto address / crypto name');
             $table->unsignedTinyInteger('status')->index()->default(0)->comment('0=pending, 1=completed');
+            $table->unsignedTinyInteger('no_of_codes')->comment('code_5 means 5 codes are needed to do transfer ...');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('temp_transactions');
     }
 };
