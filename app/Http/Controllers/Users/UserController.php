@@ -25,7 +25,6 @@ class UserController extends Controller
             'email' => 'required|email',
             'phone' => 'required|string',
             'password' => 'required|confirmed|min:6',
-            'no_of_codes' => 'required|numeric',
         ]);
 
         if($validator->fails()) {
@@ -67,7 +66,6 @@ class UserController extends Controller
                     'code_3' => $codeArray[2],
                     'code_4' => $codeArray[3],
                     'code_5' => $codeArray[4],
-                    'no_of_codes' => $validated['no_of_codes'],
                     'password' => Hash::make($validated['password'])
                 ]);
 
