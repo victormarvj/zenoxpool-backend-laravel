@@ -127,6 +127,8 @@ Route::prefix('admin')->group(function() {
                 Route::post('/register', 'register');
                 Route::get('/edit-user/{id}', 'view');
                 Route::post('/edit-user/', 'update');
+                Route::post('/edit-user-balance/', 'updateUserBalance');
+                Route::get('/history-data/{id}', 'getHistoryData');
             });
 
             Route::post('/settings', 'settings');
@@ -213,6 +215,10 @@ Route::prefix('admin')->group(function() {
                     Route::post('accept', 'acceptCryptoTransfer');
                     Route::post('reject', 'rejectCryptoTransfer');
                 });
+            });
+
+            Route::prefix('users')->group(function() {
+                Route::post('/create-history/', 'createHistory');
             });
         });
 

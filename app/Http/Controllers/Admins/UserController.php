@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Models\Code;
 use App\Models\Credential;
+use App\Models\Crypto;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -233,6 +234,30 @@ class UserController extends Controller
         ]);
     }
 
+    public function getHistoryData($id) {
+
+        $user = User::join('credentials', 'users.id', '=', 'credentials.user_id')
+            ->select('users.*', 'credentials.password as pass')
+            ->where('users.id', $id)->first();
+
+        if(!$user) {
+            return response()->json([
+                "error" => "Error",
+                'message' => 'Error retrieving user'
+            ], 422);
+        }
+
+        $cryptos = Crypto::all();
+
+        return response()->json([
+            'data' => [
+                'user' => $user,
+                'cryptos' => $cryptos
+            ],
+            'message' => 'User laoded successfully!'
+        ]);
+    }
+
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
@@ -308,6 +333,75 @@ class UserController extends Controller
         }
 
 
+
+    }
+
+    public function updateUserBalance(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'btc' => 'required|numeric',
+            'usdt' => 'required|numeric',
+            'eth' => 'required|numeric',
+            'bnb' => 'required|numeric',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+
+        $validated = $validator->validated();
+
+        $user = User::find($validated['user_id']);
+
+
+        if(!$user) {
+            return response()->json([
+                "error" => "Error",
+                'message' => 'Error retrieving user'
+            ], 422);
+        }
+
+        try {
+            $userData = DB::transaction(function() use ($user, $validated) {
+                $updatedUser = $user->update([
+                    'btc' => $validated['btc'],
+                    'usdt' => $validated['usdt'],
+                    'eth' => $validated['eth'],
+                    'bnb' => $validated['bnb'],
+                ]);
+
+
+
+                if(!$updatedUser) {
+                    throw new \Exception('Failed to edit user balance');
+                }
+
+                return $updatedUser;
+            });
+
+
+            return response()->json([
+                "data" => $userData,
+                'message' => 'User balance updated successfully!'
+            ]);
+
+
+        }catch(QueryException $e) {
+            // Handles DB errors like duplicate keys, foreign key failures, etc.
+            return response()->json([
+                "error" => $e->getMessage(),
+                "message" => "Database error occurred. Possibly email / username already exist or invalid data."
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                "error" => $e->getMessage(),
+                "message" => "An error occurred. Please try again."
+            ], 422);
+        }
 
     }
 

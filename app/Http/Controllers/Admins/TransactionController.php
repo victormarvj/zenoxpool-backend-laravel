@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
 use App\Mail\TransactionDetails;
+use App\Models\Crypto;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -252,5 +253,65 @@ class TransactionController extends Controller
         return $this->index();
     }
 
+    public function createHistory(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'type' => 'required|numeric',
+            'abbreviation' => 'required|string',
+            'amount' => 'required|numeric',
+            'type_amount' => 'required|numeric',
+            'address' => 'required|string',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "error" => $validator->errors(),
+                'message' => 'Please fill all fields properly!'
+            ], 422);
+        }
+
+
+        $validated = $validator->validated();
+
+        $user = User::find($validated['user_id']);
+
+
+        if(!$user) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Error verifying user data'
+            ], 422);
+        }
+
+        $crypto = Crypto::where('abbreviation', $validated['abbreviation'])->first();
+
+        if(!$crypto) {
+            return response()->json([
+                "error" => 'Error',
+                'message' => 'Error verifying crypto data'
+            ], 422);
+        }
+
+        $transaction_id = 'TXN-' . strtoupper(uniqid(date('YmdHis') . '-'));
+
+        $transaction = Transaction::create([
+            'user_id' => $user->id,
+            'transaction_id' => $transaction_id,
+            'type' => $validated['type'],
+            'name' => $crypto->name.'/'.$crypto->network,
+            'type_amount' => $validated['type_amount'],
+            'type_name' => $crypto->abbreviation,
+            'amount' => $validated['amount'],
+            'address' => $validated['address'],
+            'status' => 1,
+        ]);
+
+
+        return response()->json([
+            'data' => $transaction,
+            'message' => 'Transaction history created successfully!'
+        ]);
+    }
 
 }
